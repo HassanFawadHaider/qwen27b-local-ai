@@ -1,4 +1,4 @@
-name: Build llama.cpp
+name: Build llama.cpp CUDA
 
 on:
   push:
@@ -20,9 +20,10 @@ jobs:
           sudo apt update
           sudo apt install -y cmake build-essential
 
-      - name: Configure llama.cpp
+      - name: Configure llama.cpp with CUDA
         run: |
-          cmake -S llama.cpp -B llama.cpp/build
+          cmake -S llama.cpp -B llama.cpp/build \
+            -DGGML_CUDA=ON
 
       - name: Build llama.cpp
         run: |
