@@ -11,8 +11,9 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Get llama.cpp source code
-        uses: actions/checkout@v4
+      - name: Clone llama.cpp
+        run: |
+          git clone https://github.com/ggml-org/llama.cpp.git
 
       - name: Install build tools
         run: |
@@ -21,12 +22,12 @@ jobs:
 
       - name: Configure llama.cpp
         run: |
-          cmake -B build
+          cmake -S llama.cpp -B llama.cpp/build
 
       - name: Build llama.cpp
         run: |
-          cmake --build build --config Release -j2
+          cmake --build llama.cpp/build --config Release -j2
 
       - name: Check llama-cli
         run: |
-          ./build/bin/llama-cli --version
+          ./llama.cpp/build/bin/llama-cli --version
