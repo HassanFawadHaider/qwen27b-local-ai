@@ -32,3 +32,10 @@ jobs:
       - name: Check llama-cli
         run: |
           ./llama.cpp/build/bin/llama-cli --version
+          
+      - name: Upload llama.cpp build
+        uses: actions/upload-artifact@v4
+        with:
+          name: llama-cpp-cuda-build
+          path: llama.cpp/build/bin/
+      
