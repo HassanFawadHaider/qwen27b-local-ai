@@ -1,0 +1,32 @@
+name: Build llama.cpp
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Get llama.cpp source code
+        uses: actions/checkout@v4
+
+      - name: Install build tools
+        run: |
+          sudo apt update
+          sudo apt install -y cmake build-essential
+
+      - name: Configure llama.cpp
+        run: |
+          cmake -B build
+
+      - name: Build llama.cpp
+        run: |
+          cmake --build build --config Release -j2
+
+      - name: Check llama-cli
+        run: |
+          ./build/bin/llama-cli --version
