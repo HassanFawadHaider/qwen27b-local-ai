@@ -6,6 +6,9 @@ on:
       - main
   workflow_dispatch:
 
+permissions:
+  contents: write
+
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -23,7 +26,8 @@ jobs:
       - name: Configure llama.cpp with CUDA
         run: |
           cmake -S llama.cpp -B llama.cpp/build \
-            -DGGML_CUDA=ON
+            -DGGML_CUDA=ON \
+            -DCMAKE_CUDA_ARCHITECTURES=75
 
       - name: Build llama.cpp
         run: |
@@ -37,8 +41,11 @@ jobs:
         run: |
           tar -czf llama-cpp-cuda.tar.gz -C llama.cpp/build/bin .
 
-      - name: Upload packaged build
-        uses: actions/upload-artifact@v4
-        with:
-          name: llama-cpp-cuda-package
-          path: llama-cpp-cuda.tar.gz
+      - name: Publish build as GitHub Release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh release create "build-${{ github.run_number }}" \
+            llama-cpp-cuda.tar.gz \
+            --title "llama.cpp CUDA Build ${{ github.run_number }}" \
+            --notes "CUDA-enabled llama.cpp build produced by GitHub Actions."
